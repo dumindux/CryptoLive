@@ -1,0 +1,54 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Getting Started Extension's Popup</title>
+    <link rel="stylesheet" href="material.blue-cyan.min.css">
+    <link rel="stylesheet" href="icon.css">
+    <style type="text/css">
+      hr {
+        margin: 0;
+      }
+
+      #container {
+        width: 500px;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
+    <script src="ccxt.browser.js"></script>
+    <script src="popup.js"></script>
+    <script src="material.min.js"></script>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="mdl-grid" style="background-color: #008ace; height: 72px; justify-content: center;">
+        <img class="logo" src="DesignEvo-Transparent.png" style="height: 50px; margin-top: 10px; margin-bottom: 10px">
+      </div>
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--2-col">
+          <div style="font-size: 16px; padding: 4px">Exchange &nbsp;&nbsp;</div>
+        </div>
+        <div class="mdl-cell mdl-cell--3-col"></div>
+        <div class="mdl-cell mdl-cell--3-col">
+          <div class="mdl-textfield mdl-js-textfield" style="padding: 0">
+            <select class="mdl-textfield__input" id="exchanges" style="width: 160px;">
+
+            </select>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </body>
+</html>
