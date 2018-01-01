@@ -15,8 +15,19 @@
       }
 
       #container {
-        width: 500px;
+        width: 400px;
       }
+
+      tr:hover {
+        background-color: white !important;
+      }
+
+      .mdl-textfield.is-disabled .mdl-textfield__input {
+        background-color: transparent;
+        border-bottom: 1px solid rgba(0,0,0,.12);
+        color: black;
+      }
+
     </style>
 
     <!--
@@ -25,9 +36,10 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
+    <script src="material.min.js"></script>
     <script src="ccxt.browser.js"></script>
     <script src="popup.js"></script>
-    <script src="material.min.js"></script>
+    <script src="jquery-3.2.1.slim.min.js"></script>
   </head>
 
   <body>
@@ -35,20 +47,32 @@
       <div class="mdl-grid" style="background-color: #008ace; height: 72px; justify-content: center;">
         <img class="logo" src="DesignEvo-Transparent.png" style="height: 50px; margin-top: 10px; margin-bottom: 10px">
       </div>
-      <div class="mdl-grid">
-        <div class="mdl-cell mdl-cell--2-col">
+      <div class="mdl-grid" style="height: 35px">
+        <div class="mdl-cell mdl-cell--1-col">
           <div style="font-size: 16px; padding: 4px">Exchange &nbsp;&nbsp;</div>
         </div>
-        <div class="mdl-cell mdl-cell--3-col"></div>
+        <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col"></div>-->
         <div class="mdl-cell mdl-cell--3-col">
-          <div class="mdl-textfield mdl-js-textfield" style="padding: 0">
-            <select class="mdl-textfield__input" id="exchanges" style="width: 160px;">
-
-            </select>
+          <div style="float: right;">
+            <div class="mdl-textfield mdl-js-textfield" style="padding: 0;width: fit-content">
+              <select class="mdl-textfield__input" id="exchanges" style="width: 160px; float: right">
+              </select>
+            </div>
+            <i id="refreshIcon" class="material-icons" style="color: blue; cursor: pointer;display:none;">refresh</i>
+            <div id="refreshSpinner" class="mdl-spinner mdl-js-spinner is-active" style="height: 20px; width: 20px; margin-left: 4px;"></div>
           </div>
         </div>
       </div>
-      <hr>
+      <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
+        <thead>
+        <tr>
+          <th class="mdl-data-table__cell--non-numeric">Coin Pair</th>
+          <th>Price</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
     </div>
   </body>
 </html>
