@@ -6,9 +6,8 @@
  -->
 <html>
   <head>
-    <title>Getting Started Extension's Popup</title>
+    <link rel="stylesheet" href="iconfont/material-icons.css">
     <link rel="stylesheet" href="material.blue-cyan.min.css">
-    <link rel="stylesheet" href="icon.css">
     <style type="text/css">
       hr {
         margin: 0;
@@ -27,7 +26,6 @@
         border-bottom: 1px solid rgba(0,0,0,.12);
         color: black;
       }
-
     </style>
 
     <!--
@@ -36,10 +34,13 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
+    <script src="jquery-3.2.1.min.js"></script>
     <script src="material.min.js"></script>
     <script src="ccxt.browser.js"></script>
+    <script src="logos.js"></script>
+    <script src="priority.js"></script>
     <script src="popup.js"></script>
-    <script src="jquery-3.2.1.slim.min.js"></script>
+    <title>CryptoLive</title>
   </head>
 
   <body>
@@ -47,18 +48,15 @@
       <div class="mdl-grid" style="background-color: #008ace; height: 72px; justify-content: center;">
         <img class="logo" src="DesignEvo-Transparent.png" style="height: 50px; margin-top: 10px; margin-bottom: 10px">
       </div>
-      <div class="mdl-grid" style="height: 35px">
-        <div class="mdl-cell mdl-cell--1-col">
-          <div style="font-size: 16px; padding: 4px">Exchange &nbsp;&nbsp;</div>
-        </div>
-        <!--<div class="mdl-cell mdl-cell&#45;&#45;1-col"></div>-->
-        <div class="mdl-cell mdl-cell--3-col">
-          <div style="float: right;">
-            <div class="mdl-textfield mdl-js-textfield" style="padding: 0;width: fit-content">
-              <select class="mdl-textfield__input" id="exchanges" style="width: 160px; float: right">
-              </select>
-            </div>
-            <i id="refreshIcon" class="material-icons" style="color: blue; cursor: pointer;display:none;">refresh</i>
+      <div id="topBar" style="height: 35px; padding: 8px; z-index: 1; width: 384px; background-color: white">
+        <div style="font-size: 16px; padding: 4px; float: left">Exchange</div>
+        <div style="float: right;">
+          <div class="mdl-textfield mdl-js-textfield" style="padding: 0;width: fit-content;">
+            <select class="mdl-textfield__input" id="exchanges" style="width: 160px; float: right">
+            </select>
+          </div>
+          <div style="display: inline-block; width: 25px">
+            <img id="refreshIcon" class="svg refresh" style="cursor: pointer;display:none;height: 25px; width: 25px;float: right" src="refresh.png">
             <div id="refreshSpinner" class="mdl-spinner mdl-js-spinner is-active" style="height: 20px; width: 20px; margin-left: 4px;"></div>
           </div>
         </div>
@@ -73,6 +71,9 @@
         <tbody id="tableBody">
         </tbody>
       </table>
+      <div id="loadMore" style="cursor: pointer; display: none; text-align: center; color: blue">
+        load more...
+      </div>
     </div>
   </body>
 </html>

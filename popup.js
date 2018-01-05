@@ -1,123 +1,220 @@
-// Copyright (c) 2014 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+let allMarkets;
+let position;
 
-/**
- * Get the current URL.
- *
- * @param {function(string)} callback called when the URL of the current tab
- *   is found.
- */
-function getCurrentTabUrl(callback) {
-  // Query filter to be passed to chrome.tabs.query - see
-  // https://developer.chrome.com/extensions/tabs#method-query
-  var queryInfo = {
-    active: true,
-    currentWindow: true
-  };
+function scrollControll(fixmeTop) {                  // assign scroll event listener
+    return () => {
+        let currentScroll = $(window).scrollTop(); // get current position
 
-  chrome.tabs.query(queryInfo, (tabs) => {
-    // chrome.tabs.query invokes the callback with a list of tabs that match the
-    // query. When the popup is opened, there is certainly a window and at least
-    // one tab, so we can safely assume that |tabs| is a non-empty array.
-    // A window can only have one active tab at a time, so the array consists of
-    // exactly one tab.
-    var tab = tabs[0];
-
-    // A tab is a plain object that provides information about the tab.
-    // See https://developer.chrome.com/extensions/tabs#type-Tab
-    var url = tab.url;
-
-    // tab.url is only available if the "activeTab" permission is declared.
-    // If you want to see the URL of other tabs (e.g. after removing active:true
-    // from |queryInfo|), then the "tabs" permission is required to see their
-    // "url" properties.
-    console.assert(typeof url == 'string', 'tab.url should be a string');
-
-    callback(url);
-  });
-
-  // Most methods of the Chrome extension APIs are asynchronous. This means that
-  // you CANNOT do something like this:
-  //
-  // var url;
-  // chrome.tabs.query(queryInfo, (tabs) => {
-  //   url = tabs[0].url;
-  // });
-  // alert(url); // Shows "undefined", because chrome.tabs.query is async.
-}
-
-/**
- * Change the background color of the current page.
- *
- * @param {string} color The new background color.
- */
-function changeBackgroundColor(color) {
-  var script = 'document.body.style.backgroundColor="' + color + '";';
-  // See https://developer.chrome.com/extensions/tabs#method-executeScript.
-  // chrome.tabs.executeScript allows us to programmatically inject JavaScript
-  // into a page. Since we omit the optional first argument "tabId", the script
-  // is inserted into the active tab of the current window, which serves as the
-  // default.
-  chrome.tabs.executeScript({
-    code: script
-  });
-}
-
-/**
- * Gets the saved background color for url.
- *
- * @param {string} url URL whose background color is to be retrieved.
- * @param {function(string)} callback called with the saved background color for
- *     the given url on success, or a falsy value if no color is retrieved.
- */
-function getSavedBackgroundColor(url, callback) {
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
-  // for chrome.runtime.lastError to ensure correctness even when the API call
-  // fails.
-  chrome.storage.sync.get(url, (items) => {
-    callback(chrome.runtime.lastError ? null : items[url]);
-  });
-}
-
-/**
- * Sets the given background color for url.
- *
- * @param {string} url URL for which background color is to be saved.
- * @param {string} color The background color to be saved.
- */
-function saveBackgroundColor(url, color) {
-  var items = {};
-  items[url] = color;
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
-  // optional callback since we don't need to perform any action once the
-  // background color is saved.
-  chrome.storage.sync.set(items);
-}
-
-// This extension loads the saved background color for the current tab if one
-// exists. The user can select a new background color from the dropdown for the
-// current page, and it will be saved as part of the extension's isolated
-// storage. The chrome.storage API is used for this purpose. This is different
-// from the window.localStorage API, which is synchronous and stores data bound
-// to a document's origin. Also, using chrome.storage.sync instead of
-// chrome.storage.local allows the extension data to be synced across multiple
-// user devices.
-document.addEventListener('DOMContentLoaded', () => {
-  console.log(ccxt.exchanges);
-  getCurrentTabUrl((url) => {
-    const dropdown = document.getElementById('exchanges');
-    for (let i = 0; i < ccxt.exchanges.length; i++){
-        const opt = document.createElement('option');
-        opt.value = ccxt.exchanges[i];
-        opt.innerHTML = ccxt.exchanges[i];
-        if (ccxt.exchanges[i] === 'gdax')
-          opt.selected = true;
-        dropdown.appendChild(opt);
+        if (currentScroll >= fixmeTop) {           // apply position: fixed if you
+            $('#topBar').css({                      // scroll to that element or below it
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                "border-bottom":'2px',
+                "border-bottom-color":'rgba(0,0,0,.12)',
+                "border-bottom-style":'solid',
+            });
+        } else {                                   // apply position: static
+            $('#topBar').css({                      // if you scroll above it
+                position: 'static',
+                "border-bottom":'none',
+            });
+        }
     }
-    dropdown.addEventListener('change', () => {
-      changeBackgroundColor(dropdown.value);
-      saveBackgroundColor(url, dropdown.value);
+}
+
+window.addEventListener('load', () => {
+    let fixmeTop = $('#topBar').offset().top;       // get initial position of the element
+    $(window).scroll(scrollControll(fixmeTop));
+
+    $('#refreshIcon').click(() => {
+        position = 0;
+        allMarkets = undefined;
+        loadDataAndUpdate($("#exchanges option:selected").val());
     });
-  });
+
+    $('#loadMore').click(() => {
+        $('#loadMore').hide();
+        loadDataAndUpdate($("#exchanges option:selected").val());
+    });
+
+    const dropdown = $('#exchanges');
+
+    for (let i = 0; i < ccxt.exchanges.length; i++){
+        const opt = $('<option>').attr('value', ccxt.exchanges[i]).text(ccxt.exchanges[i]);
+        if (ccxt.exchanges[i] === 'gdax')
+          opt.attr('selected', true);
+        dropdown.append(opt);
+    }
+
+    position = 0;
+    allMarkets = undefined;
+    loadDataAndUpdate('gdax');
+
+    dropdown.on('change', function() {
+        position = 0;
+        allMarkets = undefined;
+        loadDataAndUpdate(this.value);
+    });
 });
+
+function sortMarkets(markets) {
+    return markets.sort((a, b) => {
+        const aBeginining = priority[a.symbol.split('/')[0]];
+        const bBeginining = priority[b.symbol.split('/')[0]];
+
+        if (aBeginining && bBeginining) {
+            if (aBeginining < bBeginining) {
+                return -1;
+            }
+            else if (bBeginining < aBeginining) {
+                return 1;
+            }
+            return 0;
+        } else if (aBeginining)
+            return -1;
+        else if (bBeginining)
+            return 1;
+
+        return 0;
+    });
+}
+
+function fetchTickerFailureHandler(market, exchange) {
+    return () => {
+        const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
+        valueTd.empty();
+        valueTd.append($('<span>').text('0'));
+        const refreshClickHandler = () => {
+            const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
+            valueTd.empty();
+            valueTd.append($('<span>').text('0'), '&nbsp;&nbsp;');
+            valueTd.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
+            componentHandler.upgradeDom();
+
+            exchange.fetchTicker(market.symbol)
+                .then((ticker) => {
+                    valueTd.empty();
+                    valueTd.append($('<span>').text(ticker.last));
+                })
+                .catch(() => {
+                    valueTd.empty();
+                    valueTd.append($('<span>').text('0'));
+                    valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: red;vertical-align: -3px; cursor: pointer;').text('refresh').click(refreshClickHandler));
+                });
+        };
+        const refresh = $('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: red;vertical-align: -3px;cursor: pointer;').text('refresh').click(refreshClickHandler);
+        valueTd.append(refresh);
+    };
+}
+
+function processMarkets(exchange, markets, tableBody) {
+    return markets.map((market) => {
+        const tr = $('<tr/>');
+        const td = $('<td/>').addClass('mdl-data-table__cell--non-numeric');
+        const td2 = $('<td/>').attr('id', market.symbol.split('/').join('').split('.').join(''));
+
+        const logo = logos[market.symbol.split('/')[0]];
+        if (logo)
+            td.append($('<img/>').attr('src', 'logos/' + logo).attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
+        else
+            td.append($('<img/>').attr('src', 'icon.png').attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
+        td.append($('<span>').text(market.symbol));
+
+        td2.append($('<span>').text('0'), '&nbsp;&nbsp;');
+        td2.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
+
+        tr.append(td);
+        tr.append(td2);
+        tableBody.append(tr);
+        componentHandler.upgradeDom();
+        $('html').height($('#container').height());
+
+        return exchange.fetchTicker(market.symbol)
+            .then((ticker) => {
+                const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
+                valueTd.empty();
+                valueTd.append($('<span>').text(ticker.last));
+                //valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: green').text('done'));
+            })
+            .catch(fetchTickerFailureHandler(market, exchange));
+    });
+}
+
+function loadMarkets(exchange) {
+    return exchange.fetchMarkets();
+}
+
+function loadDataAndUpdate(value) {
+    $('#exchanges').attr('disabled', true);
+    $('#refreshIcon').hide();
+    $('#refreshSpinner').show();
+    componentHandler.upgradeDom();
+    const exchange = new ccxt[value]();
+    if (!allMarkets) {
+        const tableBody = $('#tableBody');
+        $('#loadMore').hide();
+        tableBody.empty();
+        $('html').height($('#container').height());
+        loadMarkets(exchange)
+            .then((markets) => {
+                markets = sortMarkets(markets);
+                allMarkets = markets;
+                if (allMarkets.length < position + 20) {
+                    updateTable(exchange, allMarkets.slice(position), false);
+                    position = allMarkets.length
+                } else {
+                    updateTable(exchange, allMarkets.slice(position, position + 20), true);
+                    position = position + 20;
+                }
+            })
+            .catch(() => {
+                $('#exchanges').removeAttr('disabled');
+                $('#refreshIcon').show();
+                $('#refreshSpinner').hide();
+            })
+    } else {
+        if (position === allMarkets.length)
+            return;
+        if (allMarkets.length < position + 20) {
+            updateTable(exchange, allMarkets.slice(position), false);
+            position = allMarkets.length
+        } else {
+            updateTable(exchange, allMarkets.slice(position, position + 20), true);
+            position = position + 20;
+        }
+    }
+}
+
+function updateTable(exchange, markets, showLoadMore) {
+    const tableBody = $('#tableBody');
+    if (!markets)
+        return;
+    if(markets.constructor !== Array) {
+        markets = Object.keys(markets).map(key => markets[key]);
+    }
+
+    const promises = processMarkets(exchange, markets, tableBody);
+
+    Promise.all(promises)
+        .then(() => {
+            $('#exchanges').removeAttr('disabled');
+            $('#refreshIcon').show();
+            $('#refreshSpinner').hide();
+            componentHandler.upgradeDom();
+            if (showLoadMore)
+                $('#loadMore').show();
+            else
+                $('#loadMore').hide();
+        })
+        .catch((err) => {
+            $('#exchanges').removeAttr('disabled');
+            $('#refreshIcon').show();
+            $('#refreshSpinner').hide();
+            componentHandler.upgradeDom();
+            if (showLoadMore)
+                $('#loadMore').show();
+            else
+                $('#loadMore').hide();
+        })
+}
