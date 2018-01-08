@@ -12,7 +12,7 @@ function scrollControll(fixmeTop) {                  // assign scroll event list
                 left: '0',
                 "border-bottom":'2px',
                 "border-bottom-color":'rgba(0,0,0,.12)',
-                "border-bottom-style":'solid',
+                "border-bottom-style":'solid'
             });
         } else {                                   // apply position: static
             $('#topBar').css({                      // if you scroll above it
@@ -23,7 +23,7 @@ function scrollControll(fixmeTop) {                  // assign scroll event list
     }
 }
 
-window.addEventListener('load', () => {
+$(window).on('load', () => {
     let fixmeTop = $('#topBar').offset().top;       // get initial position of the element
     $(window).scroll(scrollControll(fixmeTop));
 
@@ -51,7 +51,7 @@ window.addEventListener('load', () => {
     allMarkets = undefined;
     loadDataAndUpdate('gdax');
 
-    dropdown.on('change', function() {
+    dropdown.change(function() {
         position = 0;
         allMarkets = undefined;
         loadDataAndUpdate(this.value);
@@ -84,22 +84,22 @@ function fetchTickerFailureHandler(market, exchange) {
     return () => {
         const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
         valueTd.empty();
-        valueTd.append($('<span>').text('0'));
+        valueTd.append($('<span>').attr('style','font-weight: 100').text('0'));
         const refreshClickHandler = () => {
             const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
             valueTd.empty();
-            valueTd.append($('<span>').text('0'), '&nbsp;&nbsp;');
+            valueTd.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
             valueTd.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
             componentHandler.upgradeDom();
 
             exchange.fetchTicker(market.symbol)
                 .then((ticker) => {
                     valueTd.empty();
-                    valueTd.append($('<span>').text(ticker.last));
+                    valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last));
                 })
                 .catch(() => {
                     valueTd.empty();
-                    valueTd.append($('<span>').text('0'));
+                    valueTd.append($('<span>').attr('style','font-weight: 100').text('0'));
                     valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: red;vertical-align: -3px; cursor: pointer;').text('refresh').click(refreshClickHandler));
                 });
         };
@@ -119,9 +119,9 @@ function processMarkets(exchange, markets, tableBody) {
             td.append($('<img/>').attr('src', 'logos/' + logo).attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
         else
             td.append($('<img/>').attr('src', 'icon.png').attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
-        td.append($('<span>').text(market.symbol));
+        td.append($('<span>').append($('<a>').text(market.symbol)));
 
-        td2.append($('<span>').text('0'), '&nbsp;&nbsp;');
+        td2.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
         td2.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
 
         tr.append(td);
@@ -134,7 +134,7 @@ function processMarkets(exchange, markets, tableBody) {
             .then((ticker) => {
                 const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
                 valueTd.empty();
-                valueTd.append($('<span>').text(ticker.last));
+                valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last));
                 //valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: green').text('done'));
             })
             .catch(fetchTickerFailureHandler(market, exchange));
