@@ -59,7 +59,7 @@ $(window).on('load', () => {
 });
 
 function sortMarkets(markets) {
-    return markets.sort((a, b) => {
+    return markets.filter(market => market.active === undefined ? true : market.active).sort((a, b) => {
         const aBeginining = priority[a.symbol.split('/')[0]];
         const bBeginining = priority[b.symbol.split('/')[0]];
 
@@ -95,7 +95,7 @@ function fetchTickerFailureHandler(market, exchange) {
             exchange.fetchTicker(market.symbol)
                 .then((ticker) => {
                     valueTd.empty();
-                    valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last));
+                    valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last? ticker.last : ticker.close));
                 })
                 .catch(() => {
                     valueTd.empty();
@@ -119,7 +119,7 @@ function processMarkets(exchange, markets, tableBody) {
             td.append($('<img/>').attr('src', 'logos/' + logo).attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
         else
             td.append($('<img/>').attr('src', 'icon.png').attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
-        td.append($('<span>').append($('<a>').text(market.symbol)));
+        td.append($('<span>').append($('<a>').attr('id', 'name-' + market.symbol.split('/').join('').split('.').join('')).text(market.symbol)));
 
         td2.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
         td2.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
@@ -134,7 +134,7 @@ function processMarkets(exchange, markets, tableBody) {
             .then((ticker) => {
                 const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
                 valueTd.empty();
-                valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last));
+                valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last? ticker.last : ticker.close));
                 //valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: green').text('done'));
             })
             .catch(fetchTickerFailureHandler(market, exchange));
