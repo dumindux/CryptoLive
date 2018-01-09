@@ -36,6 +36,30 @@
         color: #008ace;
         cursor: pointer;
       }
+
+      .overlay {
+        width: 400px;
+        position:fixed;
+        top:88px;
+        bottom:0;
+        left:0;
+        right:0;
+        background-color:#fff;
+        opacity:0.8;
+        z-index:1001;
+      }
+
+      .loader {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        z-index:1002;
+      }
     </style>
 
     <!--
@@ -47,6 +71,8 @@
     <script src="jquery-3.2.1.min.js"></script>
     <script src="material.min.js"></script>
     <script src="ccxt.browser.js"></script>
+    <script src="highstock.js"></script>
+    <script src="exporting.js"></script>
     <script src="logos.js"></script>
     <script src="priority.js"></script>
     <script src="popup.js"></script>
@@ -58,31 +84,85 @@
       <div class="mdl-grid" style="background-color: #008ace; height: 72px; justify-content: center;">
         <img class="logo" src="DesignEvo-Transparent.png" style="height: 50px; margin-top: 10px; margin-bottom: 10px">
       </div>
-      <div id="topBar" style="height: 35px; padding: 8px; z-index: 1; width: 384px; background-color: white">
-        <div style="font-size: 16px; padding: 4px; float: left">Exchange</div>
-        <div style="float: right;">
-          <div class="mdl-textfield mdl-js-textfield" style="padding: 0;width: fit-content;">
-            <select class="mdl-textfield__input" id="exchanges" style="width: 160px; float: right">
-            </select>
-          </div>
-          <div style="display: inline-block; width: 25px">
-            <img id="refreshIcon" style="cursor: pointer;display:none;height: 25px; width: 25px;float: right" src="refresh.png">
-            <div id="refreshSpinner" class="mdl-spinner mdl-js-spinner is-active" style="height: 20px; width: 20px; margin-left: 4px;"></div>
+      <div id="home">
+        <div id="topBar" style="height: 35px; padding: 8px; z-index: 1; width: 384px; background-color: white">
+          <div style="font-size: 16px; padding: 4px; float: left">Exchange</div>
+          <div style="float: right;">
+            <div class="mdl-textfield mdl-js-textfield" style="padding: 0;width: fit-content;">
+              <select class="mdl-textfield__input" id="exchanges" style="width: 160px; float: right">
+              </select>
+            </div>
+            <div style="display: inline-block; width: 25px">
+              <img id="refreshIcon" style="cursor: pointer;display:none;height: 25px; width: 25px;float: right" src="refresh.png">
+              <div id="refreshSpinner" class="mdl-spinner mdl-js-spinner is-active" style="height: 20px; width: 20px; margin-left: 4px;"></div>
+            </div>
           </div>
         </div>
+        <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
+          <thead>
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric" style="padding: 12px">Coin Pair</th>
+            <th style="padding: 12px">Price</th>
+          </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+        <div id="loadMore" style="cursor: pointer; display: none; text-align: center; color: #008ace">
+          load more...
+        </div>
       </div>
-      <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
-        <thead>
-        <tr>
-          <th class="mdl-data-table__cell--non-numeric">Coin Pair</th>
-          <th>Price</th>
-        </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
-      </table>
-      <div id="loadMore" style="cursor: pointer; display: none; text-align: center; color: #008ace">
-        load more...
+      <div id="details" style="display: none">
+        <div style="width: 400px">
+          <div class="overlay">
+            <div id="loadingSpinner" class="loader mdl-spinner mdl-js-spinner is-active"></div>
+          </div>
+          <div id="content">
+            <div id="chart" style="height: 400px; width: 400px;"></div>
+            <div>
+              <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
+                <thead>
+                <tr>
+                  <th class="mdl-data-table__cell--non-numeric" style="padding: 12px">Past 1 minute market data</th>
+                </tr>
+                <tbody>
+                <tr>
+                  <td class="'mdl-data-table__cell--non-numeric'" style=";padding: 12px">
+                    <span style="float: left">Open</span>
+                  </td>
+                  <td  style="padding: 12px">
+                    <span id="openValue">0</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="'mdl-data-table__cell--non-numeric'" style="padding: 12px">
+                    <span style="float: left">High</span>
+                  </td>
+                  <td style="padding: 12px">
+                    <span id="highValue">0</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="'mdl-data-table__cell--non-numeric'" style="padding: 12px">
+                    <span style="float: left">Low</span>
+                  </td>
+                  <td style="padding: 12px">
+                    <span id="lowValue">0</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="'mdl-data-table__cell--non-numeric'" style="border-bottom: none;padding: 12px">
+                    <span style="float: left">Close</span>
+                  </td>
+                  <td style="border-bottom: none;padding: 12px">
+                    <span id="closeValue">0</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
