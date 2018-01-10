@@ -82,7 +82,7 @@
   <body>
     <div id="container">
       <div class="mdl-grid" style="background-color: #008ace; height: 72px; justify-content: center;">
-        <img class="logo" src="DesignEvo-Transparent.png" style="height: 50px; margin-top: 10px; margin-bottom: 10px">
+        <img src="DesignEvo-Transparent.png" style="height: 50px; margin-top: 10px; margin-bottom: 10px">
       </div>
       <div id="home">
         <div id="topBar" style="height: 35px; padding: 8px; z-index: 1; width: 384px; background-color: white">
@@ -113,11 +113,14 @@
         </div>
       </div>
       <div id="details" style="display: none">
+        <img src="back.png" style="height: 30px;width: 30px;z-index: 20;">
+        <img src="refresh.png" style="height: 30px;width: 30px;z-index: 20;float:right">
         <div style="width: 400px">
           <div class="overlay">
             <div id="loadingSpinner" class="loader mdl-spinner mdl-js-spinner is-active"></div>
           </div>
           <div id="content">
+
             <div id="chart" style="height: 400px; width: 400px;"></div>
             <div>
               <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
@@ -128,7 +131,7 @@
                 <tbody>
                 <tr>
                   <td class="'mdl-data-table__cell--non-numeric'" style=";padding: 12px">
-                    <span style="float: left">Open</span>
+                    <span style="float: left;font-weight: bold;color: #008ace;">Open</span>
                   </td>
                   <td  style="padding: 12px">
                     <span id="openValue">0</span>
@@ -136,7 +139,7 @@
                 </tr>
                 <tr>
                   <td class="'mdl-data-table__cell--non-numeric'" style="padding: 12px">
-                    <span style="float: left">High</span>
+                    <span style="float: left;font-weight: bold;color: #008ace;">High</span>
                   </td>
                   <td style="padding: 12px">
                     <span id="highValue">0</span>
@@ -144,7 +147,7 @@
                 </tr>
                 <tr>
                   <td class="'mdl-data-table__cell--non-numeric'" style="padding: 12px">
-                    <span style="float: left">Low</span>
+                    <span style="float: left;font-weight: bold;color: #008ace;">Low</span>
                   </td>
                   <td style="padding: 12px">
                     <span id="lowValue">0</span>
@@ -152,7 +155,7 @@
                 </tr>
                 <tr>
                   <td class="'mdl-data-table__cell--non-numeric'" style="border-bottom: none;padding: 12px">
-                    <span style="float: left">Close</span>
+                    <span style="float: left;font-weight: bold;color: #008ace;">Close</span>
                   </td>
                   <td style="border-bottom: none;padding: 12px">
                     <span id="closeValue">0</span>

@@ -1,5 +1,6 @@
 let allMarkets;
 let position;
+let chart;
 
 function scrollControll(fixmeTop) {                  // assign scroll event listener
     return () => {
@@ -111,15 +112,21 @@ function fetchTickerFailureHandler(market, exchange) {
 function processMarkets(exchange, markets, tableBody) {
     return markets.map((market) => {
         const tr = $('<tr/>');
-        const td = $('<td/>').addClass('mdl-data-table__cell--non-numeric');
-        const td2 = $('<td/>').attr('id', market.symbol.split('/').join('').split('.').join(''));
+        const td = $('<td/>').addClass('mdl-data-table__cell--non-numeric').attr('style', 'padding: 12px');
+        const td2 = $('<td/>').attr('id', market.symbol.split('/').join('').split('.').join('')).attr('style', 'padding: 12px');
 
         const logo = logos[market.symbol.split('/')[0]];
         if (logo)
             td.append($('<img/>').attr('src', 'logos/' + logo).attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
         else
             td.append($('<img/>').attr('src', 'icon.png').attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
-        td.append($('<span>').append($('<a>').attr('id', 'name-' + market.symbol.split('/').join('').split('.').join('')).text(market.symbol)));
+        td.append($('<span>').append($('<a>').attr('id', 'name-' + market.symbol.split('/').join('').split('.').join('')).text(market.symbol).click(() => {
+            $('#home').hide();
+            $('#details').show();
+            $('html').height($('#details').height());
+            window.scrollTo(0, 0);
+            loadUI('gdax', 'BTC/USD');
+        })));
 
         td2.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
         td2.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
@@ -172,6 +179,7 @@ function loadDataAndUpdate(value) {
                 $('#exchanges').removeAttr('disabled');
                 $('#refreshIcon').show();
                 $('#refreshSpinner').hide();
+                $('html').height($('#container').height());
             })
     } else {
         if (position === allMarkets.length)
@@ -217,4 +225,76 @@ function updateTable(exchange, markets, showLoadMore) {
             else
                 $('#loadMore').hide();
         })
+}
+
+function loadUI(exchangeName, ticker) {
+    const exchange = new ccxt[exchangeName]();
+    exchange.fetchOHLCV (ticker, '1m').then((data) => {
+        data = data.map(item => item.slice(0, 5)).sort((a, b) => a[0] - b[0]);
+        console.log(data);
+        loadChart(exchangeName, ticker, data);
+        $('#openValue').text(data[data.length - 1][1]);
+        $('#highValue').text(data[data.length - 1][2]);
+        $('#lowValue').text(data[data.length - 1][3]);
+        $('#closeValue').text(data[data.length - 1][4]);
+        $('.overlay').hide();
+    });
+}
+
+function loadChart(exchangeName, ticker, data) {
+    chart = Highcharts.stockChart('chart', {
+        exporting: { enabled: false },
+        rangeSelector: {
+            selected: 0,
+            buttons: [{
+                type: 'hour',
+                count: 1,
+                text: '1h'
+            }, {
+                type: 'hour',
+                count: 6,
+                text: '6h'
+            }, {
+                type: 'hour',
+                count: 12,
+                text: '12h'
+            }, {
+                type: 'hour',
+                count: 24,
+                text: '24h'
+            },{
+                type: 'ytd',
+                text: 'YTD'
+            }, {
+                type: 'month',
+                count: 1,
+                text: '1M'
+            }, {
+                type: 'month',
+                count: 2,
+                text: '2M'
+            }, {
+                type: 'all',
+                text: 'All'
+            }]
+        },
+        title: {
+            text: ticker + ' - ' + exchangeName
+        },
+
+        series: [{
+            type: 'ohlc',
+            name: ticker + ' - ' + exchangeName,
+            data,
+            dataGrouping: {
+                units: [[
+                    'minute', // unit name
+                    [1] // allowed multiples
+                ], [
+                    'month',
+                    [1, 2, 3, 4, 6]
+                ]]
+            }
+        }]
+    });
 }
