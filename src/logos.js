@@ -1,7 +1,7 @@
 logos = {
-    "BTC": "bitcoin.png",
-    "ETH": "etherium.png",
-    "XRP": "xrp.png",
-    "LTC": "litecoin.png",
-    "DASH": "dashcoin.png"
+    "BTC": "../../logos/bitcoin.png",
+    "ETH": "../../logos/etherium.png",
+    "XRP": "../../logos/xrp.png",
+    "LTC": "../../logos/litecoin.png",
+    "DASH": "../../logos/dashcoin.png"
 };

@@ -39,6 +39,7 @@
 
       .overlay {
         width: 400px;
+        height: 400px;
         position:fixed;
         top:88px;
         bottom:0;
@@ -58,7 +59,7 @@
         left: 0;
         right: 0;
         margin: auto;
-        z-index:1002;
+        z-index:999;
       }
     </style>
 
@@ -74,6 +75,7 @@
     <script src="../lib/highstock.js"></script>
     <script src="logos.js"></script>
     <script src="priority.js"></script>
+    <script src="details.js"></script>
     <script src="popup.js"></script>
     <title>CryptoLive</title>
   </head>
@@ -112,14 +114,18 @@
         </div>
       </div>
       <div id="details" style="display: none">
-        <img src="../img/back.png" style="height: 30px;width: 30px;z-index: 20;">
-        <img src="../img/refresh.png" style="height: 30px;width: 30px;z-index: 20;float:right">
-        <div style="width: 400px">
+        <div id="detailsNavBar" >
+          <img id="backToMain" src="../img/back.png" style="position: absolute; height: 30px;width: 30px;z-index: 20;cursor: pointer">
+          <img id="refreshDetails" src="../img/refresh.png" style="position: absolute; height: 30px;width: 30px;z-index: 20;right: 0; cursor: pointer">
+        </div>
+        <div  style="width: 400px">
           <div class="overlay">
             <div id="loadingSpinner" class="loader mdl-spinner mdl-js-spinner is-active"></div>
+            <div id="notSupported" style="display: none;margin-top: 200px;text-align: center;">
+              <div>This exchange does not support OHLC data.</div>
+            </div>
           </div>
-          <div id="content">
-
+          <div id="content" style="display: none; padding-top: 30px">
             <div id="chart" style="height: 400px; width: 400px;"></div>
             <div>
               <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
@@ -166,6 +172,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </body>
 </html>

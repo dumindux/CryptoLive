@@ -1,6 +1,7 @@
 let allMarkets;
 let position;
 let chart;
+let exchange;
 
 function scrollControll(fixmeTop) {                  // assign scroll event listener
     return () => {
@@ -34,9 +35,19 @@ $(window).on('load', () => {
         loadDataAndUpdate($("#exchanges option:selected").val());
     });
 
+    $('#backToMain').click(() => {
+        position = 0;
+        allMarkets = undefined;
+        $('#home').show();
+        $('#details').hide();
+        $('.overlay').show();
+        $('#content').hide();
+        loadDataAndUpdate();
+    });
+
     $('#loadMore').click(() => {
         $('#loadMore').hide();
-        loadDataAndUpdate($("#exchanges option:selected").val());
+        loadDataAndUpdate();
     });
 
     const dropdown = $('#exchanges');
@@ -50,12 +61,14 @@ $(window).on('load', () => {
 
     position = 0;
     allMarkets = undefined;
-    loadDataAndUpdate('gdax');
+    exchange = new ccxt['gdax']();
+    loadDataAndUpdate();
 
     dropdown.change(function() {
         position = 0;
         allMarkets = undefined;
-        loadDataAndUpdate(this.value);
+        exchange = new ccxt[this.value]();
+        loadDataAndUpdate();
     });
 });
 
@@ -81,7 +94,7 @@ function sortMarkets(markets) {
     });
 }
 
-function fetchTickerFailureHandler(market, exchange) {
+function fetchTickerFailureHandler(market) {
     return () => {
         const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
         valueTd.empty();
@@ -109,7 +122,7 @@ function fetchTickerFailureHandler(market, exchange) {
     };
 }
 
-function processMarkets(exchange, markets, tableBody) {
+function processMarkets(markets, tableBody) {
     return markets.map((market) => {
         const tr = $('<tr/>');
         const td = $('<td/>').addClass('mdl-data-table__cell--non-numeric').attr('style', 'padding: 12px');
@@ -119,13 +132,14 @@ function processMarkets(exchange, markets, tableBody) {
         if (logo)
             td.append($('<img/>').attr('src', 'logos/' + logo).attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
         else
-            td.append($('<img/>').attr('src', 'icon.png').attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
+            td.append($('<img/>').attr('src', '../img/icon.png').attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
         td.append($('<span>').append($('<a>').attr('id', 'name-' + market.symbol.split('/').join('').split('.').join('')).text(market.symbol).click(() => {
             $('#home').hide();
             $('#details').show();
-            $('html').height($('#details').height());
+            $('#detailsNavBar').show();
+            $('html').height(518);
             window.scrollTo(0, 0);
-            loadUI('gdax', 'BTC/USD');
+            loadDetailsUI('gdax', 'BTC/USD');
         })));
 
         td2.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
@@ -144,34 +158,33 @@ function processMarkets(exchange, markets, tableBody) {
                 valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last? ticker.last : ticker.close));
                 //valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: green').text('done'));
             })
-            .catch(fetchTickerFailureHandler(market, exchange));
+            .catch(fetchTickerFailureHandler(market));
     });
 }
 
-function loadMarkets(exchange) {
+function loadMarkets() {
     return exchange.fetchMarkets();
 }
 
-function loadDataAndUpdate(value) {
+function loadDataAndUpdate() {
     $('#exchanges').attr('disabled', true);
     $('#refreshIcon').hide();
     $('#refreshSpinner').show();
     componentHandler.upgradeDom();
-    const exchange = new ccxt[value]();
     if (!allMarkets) {
         const tableBody = $('#tableBody');
         $('#loadMore').hide();
         tableBody.empty();
         $('html').height($('#container').height());
-        loadMarkets(exchange)
+        loadMarkets()
             .then((markets) => {
                 markets = sortMarkets(markets);
                 allMarkets = markets;
                 if (allMarkets.length < position + 20) {
-                    updateTable(exchange, allMarkets.slice(position), false);
+                    updateTable(allMarkets.slice(position), false);
                     position = allMarkets.length
                 } else {
-                    updateTable(exchange, allMarkets.slice(position, position + 20), true);
+                    updateTable(allMarkets.slice(position, position + 20), true);
                     position = position + 20;
                 }
             })
@@ -185,16 +198,16 @@ function loadDataAndUpdate(value) {
         if (position === allMarkets.length)
             return;
         if (allMarkets.length < position + 20) {
-            updateTable(exchange, allMarkets.slice(position), false);
+            updateTable(allMarkets.slice(position), false);
             position = allMarkets.length
         } else {
-            updateTable(exchange, allMarkets.slice(position, position + 20), true);
+            updateTable(allMarkets.slice(position, position + 20), true);
             position = position + 20;
         }
     }
 }
 
-function updateTable(exchange, markets, showLoadMore) {
+function updateTable(markets, showLoadMore) {
     const tableBody = $('#tableBody');
     if (!markets)
         return;
@@ -202,7 +215,7 @@ function updateTable(exchange, markets, showLoadMore) {
         markets = Object.keys(markets).map(key => markets[key]);
     }
 
-    const promises = processMarkets(exchange, markets, tableBody);
+    const promises = processMarkets(markets, tableBody);
 
     Promise.all(promises)
         .then(() => {
@@ -225,76 +238,4 @@ function updateTable(exchange, markets, showLoadMore) {
             else
                 $('#loadMore').hide();
         })
-}
-
-function loadUI(exchangeName, ticker) {
-    const exchange = new ccxt[exchangeName]();
-    exchange.fetchOHLCV (ticker, '1m').then((data) => {
-        data = data.map(item => item.slice(0, 5)).sort((a, b) => a[0] - b[0]);
-        console.log(data);
-        loadChart(exchangeName, ticker, data);
-        $('#openValue').text(data[data.length - 1][1]);
-        $('#highValue').text(data[data.length - 1][2]);
-        $('#lowValue').text(data[data.length - 1][3]);
-        $('#closeValue').text(data[data.length - 1][4]);
-        $('.overlay').hide();
-    });
-}
-
-function loadChart(exchangeName, ticker, data) {
-    chart = Highcharts.stockChart('chart', {
-        exporting: { enabled: false },
-        rangeSelector: {
-            selected: 0,
-            buttons: [{
-                type: 'hour',
-                count: 1,
-                text: '1h'
-            }, {
-                type: 'hour',
-                count: 6,
-                text: '6h'
-            }, {
-                type: 'hour',
-                count: 12,
-                text: '12h'
-            }, {
-                type: 'hour',
-                count: 24,
-                text: '24h'
-            },{
-                type: 'ytd',
-                text: 'YTD'
-            }, {
-                type: 'month',
-                count: 1,
-                text: '1M'
-            }, {
-                type: 'month',
-                count: 2,
-                text: '2M'
-            }, {
-                type: 'all',
-                text: 'All'
-            }]
-        },
-        title: {
-            text: ticker + ' - ' + exchangeName
-        },
-
-        series: [{
-            type: 'ohlc',
-            name: ticker + ' - ' + exchangeName,
-            data,
-            dataGrouping: {
-                units: [[
-                    'minute', // unit name
-                    [1] // allowed multiples
-                ], [
-                    'month',
-                    [1, 2, 3, 4, 6]
-                ]]
-            }
-        }]
-    });
 }
