@@ -99,7 +99,7 @@
             </div>
           </div>
         </div>
-        <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
+        <table id="tickerTable" class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
           <thead>
           <tr>
             <th class="mdl-data-table__cell--non-numeric" style="padding: 12px">Coin Pair</th>
@@ -124,6 +124,9 @@
             <div id="notSupported" style="display: none;margin-top: 200px;text-align: center;">
               <div>This exchange does not support OHLC data.</div>
             </div>
+            <div id="detailsError" style="display: none;margin-top: 200px;text-align: center;">
+              <div>An error occurred while fetching OHLC data.</div>
+            </div>
           </div>
           <div id="content" style="display: none; padding-top: 30px">
             <div id="chart" style="height: 400px; width: 400px;"></div>
@@ -131,7 +134,7 @@
               <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
                 <thead>
                 <tr>
-                  <th class="mdl-data-table__cell--non-numeric" style="padding: 12px">Past 1 minute market data</th>
+                  <th id="detailsTableHeading" class="mdl-data-table__cell--non-numeric" style="padding: 12px">Past 1 minute market data</th>
                 </tr>
                 <tbody>
                 <tr>
@@ -172,7 +175,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </body>
 </html>

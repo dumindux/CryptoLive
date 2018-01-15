@@ -2,6 +2,7 @@ let allMarkets;
 let position;
 let chart;
 let exchange;
+let detailsError;
 
 function scrollControll(fixmeTop) {                  // assign scroll event listener
     return () => {
@@ -42,7 +43,23 @@ $(window).on('load', () => {
         $('#details').hide();
         $('.overlay').show();
         $('#content').hide();
+        $('#detailsError').hide();
+        $('#notSupported').hide();
+        $('#loadingSpinner').show();
+        $('#refreshDetails').css('z-index', '20');
+        $('#backToMain').css('z-index', '20');
+
         loadDataAndUpdate();
+    });
+
+    $('#refreshDetails').click(() => {
+        if (detailsError) {
+            $('#refreshDetails').css('z-index', '20');
+            $('#backToMain').css('z-index', '20');
+            $('#detailsError').hide();
+            $('#loadingSpinner').show();
+        }
+        loadDetailsUI(currentTicker);
     });
 
     $('#loadMore').click(() => {
@@ -136,11 +153,9 @@ function processMarkets(markets, tableBody) {
         td.append($('<span>').append($('<a>').attr('id', 'name-' + market.symbol.split('/').join('').split('.').join('')).text(market.symbol).click(() => {
             $('#home').hide();
             $('#details').show();
-            $('#detailsNavBar').show();
             $('html').height(518);
             window.scrollTo(0, 0);
-            //loadDetailsUI('coincheck', 'BTC/USD');
-            loadDetailsUI('gdax', 'BTC/USD');
+            loadDetailsUI(market.symbol);
         })));
 
         td2.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
@@ -168,6 +183,7 @@ function loadMarkets() {
 }
 
 function loadDataAndUpdate() {
+    $('#tickerTable').css('pointer-events', 'none');
     $('#exchanges').attr('disabled', true);
     $('#refreshIcon').hide();
     $('#refreshSpinner').show();
@@ -217,12 +233,14 @@ function updateTable(markets, showLoadMore) {
     }
 
     const promises = processMarkets(markets, tableBody);
-
+    $('a').css('color', '#000000');
     Promise.all(promises)
         .then(() => {
+            $('a').css('color', '');
             $('#exchanges').removeAttr('disabled');
             $('#refreshIcon').show();
             $('#refreshSpinner').hide();
+            $('#tickerTable').css('pointer-events', 'auto');
             componentHandler.upgradeDom();
             if (showLoadMore)
                 $('#loadMore').show();
@@ -230,9 +248,11 @@ function updateTable(markets, showLoadMore) {
                 $('#loadMore').hide();
         })
         .catch((err) => {
+            $('a').css('color', '');
             $('#exchanges').removeAttr('disabled');
             $('#refreshIcon').show();
             $('#refreshSpinner').hide();
+            $('#tickerTable').css('pointer-events', 'auto');
             componentHandler.upgradeDom();
             if (showLoadMore)
                 $('#loadMore').show();
