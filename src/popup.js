@@ -139,6 +139,7 @@ function processMarkets(markets, tableBody) {
             $('#detailsNavBar').show();
             $('html').height(518);
             window.scrollTo(0, 0);
+            //loadDetailsUI('coincheck', 'BTC/USD');
             loadDetailsUI('gdax', 'BTC/USD');
         })));
 

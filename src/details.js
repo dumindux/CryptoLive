@@ -160,17 +160,21 @@ const buttons5m = [{
 
 function loadDetailsUI(exchangeName, ticker) {
     const exchange = new ccxt[exchangeName]();
-    if (!exchange.hasFetchOHLCV) {
+    if (!exchange.hasFetchOHLCV || !exchange.timeframes) {
         $('#notSupported').show();
         $('#loadingSpinner').hide();
         $('#backToMain').css('z-index', '1500');
         return;
-
     }
+
+    const timeframe = Object.keys(exchange.timeframes)[0];
+
+    const buttons = timeframe === '1m'? buttons1m : (timeframe === '5m' ? buttons5m : (timeframe === '15m' ? buttons15m : (timeframe === '90m' ? buttons90m : buttons1d)))
+
     exchange.fetchOHLCV (ticker, '1d').then((data) => {
         data = data.map(item => item.slice(0, 5)).sort((a, b) => a[0] - b[0]);
         console.log(data);
-        loadChart(exchangeName, ticker, data);
+        loadChart(exchangeName, ticker, data, buttons);
         $('#openValue').text(data[data.length - 1][1]);
         $('#highValue').text(data[data.length - 1][2]);
         $('#lowValue').text(data[data.length - 1][3]);
@@ -180,12 +184,12 @@ function loadDetailsUI(exchangeName, ticker) {
     });
 }
 
-function loadChart(exchangeName, ticker, data) {
+function loadChart(exchangeName, ticker, data, buttons) {
     chart = Highcharts.stockChart('chart', {
         exporting: { enabled: false },
         rangeSelector: {
             selected: 0,
-            buttons: buttons1m
+            buttons
         },
         title: {
             text: ticker + ' - ' + exchangeName
