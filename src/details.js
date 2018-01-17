@@ -197,9 +197,7 @@ function loadDetailsUI(ticker) {
     const timeframe = Object.keys(exchange.timeframes)[0];
 
     const timeframeInformation = timeframe === '1m'? info1m : (timeframe === '5m' ? info5m : (timeframe === '15m' ? info15m : (timeframe === '90m' ? info90m : info1d)));
-    /*exchange.fetchOHLCV=()=>new Promise((s,r)=>{
-        setTimeout(()=>r(),3000);
-    });*/
+
     exchange.timeout = 20000;
     $('#detailsTableHeading').text(`Past ${timeframeInformation.displayText} market data`);
     console.log(ticker, timeframe);
