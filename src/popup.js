@@ -234,9 +234,11 @@ function updateTable(markets, showLoadMore) {
 
     const promises = processMarkets(markets, tableBody);
     $('a').css('color', '#000000');
+    $('a').css('font-weight', 'normal');
     Promise.all(promises)
         .then(() => {
             $('a').css('color', '');
+            $('a').css('font-weight', '');
             $('#exchanges').removeAttr('disabled');
             $('#refreshIcon').show();
             $('#refreshSpinner').hide();
@@ -249,6 +251,7 @@ function updateTable(markets, showLoadMore) {
         })
         .catch((err) => {
             $('a').css('color', '');
+            $('a').css('font-weight', '');
             $('#exchanges').removeAttr('disabled');
             $('#refreshIcon').show();
             $('#refreshSpinner').hide();
