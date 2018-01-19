@@ -48,6 +48,7 @@ $(window).on('load', () => {
         $('#loadingSpinner').show();
         $('#refreshDetails').css('z-index', '20');
         $('#backToMain').css('z-index', '20');
+        $('#lastPriceDetailsPage').text('0');
 
         loadDataAndUpdate();
     });

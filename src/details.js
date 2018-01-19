@@ -223,7 +223,15 @@ function loadDetailsUI(ticker) {
             $('#backToMain').css('z-index', '1500');
             detailsError = true;
             exchange.timeout = 10000;
+        });
+
+    exchange.fetchTicker(ticker)
+        .then(data => {
+            $('#lastPriceDetailsPage').text(data.last);
         })
+        .catch(() => {
+            $('#lastPriceDetailsPage').text('0');
+        });
 }
 
 function loadChart(ticker, data, buttons) {
