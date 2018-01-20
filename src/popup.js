@@ -4,22 +4,18 @@ let chart;
 let exchange;
 let detailsError;
 
-function scrollControll(fixmeTop) {                  // assign scroll event listener
+function scrollControll(fixmeTop) {
     return () => {
-        let currentScroll = $(window).scrollTop(); // get current position
+        let currentScroll = $(window).scrollTop();
 
-        if (currentScroll >= fixmeTop) {           // apply position: fixed if you
-            $('#topBar').css({                      // scroll to that element or below it
-                position: 'fixed',
-                top: '0',
-                left: '0',
+        if (currentScroll >= fixmeTop) {
+            $('#topBar').css({
                 "border-bottom":'2px',
                 "border-bottom-color":'rgba(0,0,0,.12)',
                 "border-bottom-style":'solid'
             });
-        } else {                                   // apply position: static
-            $('#topBar').css({                      // if you scroll above it
-                position: 'static',
+        } else {
+            $('#topBar').css({
                 "border-bottom":'none',
             });
         }
