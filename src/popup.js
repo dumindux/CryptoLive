@@ -70,23 +70,29 @@ $(window).on('load', () => {
 
     const dropdown = $('#exchanges');
 
-    for (let i = 0; i < ccxt.exchanges.length; i++){
-        const opt = $('<option>').attr('value', ccxt.exchanges[i]).text(ccxt.exchanges[i]);
-        if (ccxt.exchanges[i] === 'gdax')
-          opt.attr('selected', true);
-        dropdown.append(opt);
-    }
+    chrome.storage.sync.get(['exchange'], function(item){
+        let savedExchange = item.exchange ? item.exchange : 'gdax';
+        console.log(savedExchange);
 
-    position = 0;
-    allMarkets = undefined;
-    exchange = new ccxt['gdax']();
-    loadDataAndUpdate();
+        for (let i = 0; i < ccxt.exchanges.length; i++){
+            const opt = $('<option>').attr('value', ccxt.exchanges[i]).text(ccxt.exchanges[i]);
+            if (ccxt.exchanges[i] === savedExchange)
+                opt.attr('selected', true);
+            dropdown.append(opt);
+        }
 
-    dropdown.change(function() {
         position = 0;
         allMarkets = undefined;
-        exchange = new ccxt[this.value]();
+        exchange = new ccxt[savedExchange]();
         loadDataAndUpdate();
+
+        dropdown.change(function() {
+            position = 0;
+            allMarkets = undefined;
+            chrome.storage.sync.set({ exchange: this.value });
+            exchange = new ccxt[this.value]();
+            loadDataAndUpdate();
+        });
     });
 });
 
