@@ -10,13 +10,11 @@ function scrollControll(fixmeTop) {
 
         if (currentScroll >= fixmeTop) {
             $('#topBar').css({
-                "border-bottom":'2px',
-                "border-bottom-color":'rgba(0,0,0,.12)',
-                "border-bottom-style":'solid'
+                "border-bottom-width":'2px'
             });
         } else {
             $('#topBar').css({
-                "border-bottom":'none',
+                "border-bottom-width":'0px'
             });
         }
     }
