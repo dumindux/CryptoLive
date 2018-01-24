@@ -1,0 +1,96 @@
+hr {
+    margin: 0;
+}
+
+#container {
+    width: 400px;
+}
+
+tr:hover {
+    background-color: white !important;
+}
+
+.mdl-textfield.is-disabled .mdl-textfield__input {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    color: black;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a {
+    font-weight: bold;
+    color: #008ace;
+    cursor: pointer;
+}
+
+.overlay {
+    width: 400px;
+    height: 400px;
+    position:fixed;
+    top:88px;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color:#fff;
+    opacity:0.8;
+    z-index:1001;
+}
+
+.loader {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index:999;
+}
+
+.top-header {
+    background-color: #008ace;
+    height: 72px;
+    justify-content: center;
+}
+
+.header-image {
+    height: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#top-bar {
+    height: 35px;
+    padding: 8px;
+    z-index: 1;
+    width: 384px;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    border-bottom: rgba(0,0,0,.12) solid 0;
+}
+
+#topBarLabel {
+    font-size: 16px;
+    padding: 4px;
+    float: left;
+}
+
+#topBarSelectAndLoad {
+    float: right;
+}
+
+#topBarSelectContainer {
+    padding: 0;
+    width: fit-content;
+}
+
+#exchanges {
+    width: 160px;
+    float: right;
+}
+
