@@ -94,3 +94,24 @@ a {
     float: right;
 }
 
+#topBarProgressionContainer {
+    display: inline-block;
+    width: 25px;
+}
+
+#refreshIcon {
+    cursor: pointer;
+    display:none;
+    height: 25px;
+    width: 25px;
+    float: right
+}
+
+#refreshSpinner {
+    height: 20px;
+    width: 20px;
+    margin-left: 4px;
+}
+
+
+
