@@ -1,9 +1,6 @@
 <!doctype html>
 <html>
 <head>
-    <link rel="stylesheet" href="../iconfont/material-icons.css">
-    <link rel="stylesheet" href="../lib/material.blue-cyan.min.css">
-    <link rel="stylesheet" href="./styles/styles.css">
     <script src="../lib/jquery-3.2.1.min.js"></script>
     <script src="../lib/material.min.js"></script>
     <script src="../lib/ccxt.browser.js"></script>
@@ -12,6 +9,9 @@
     <script src="js/priority.js"></script>
     <script src="js/details.js"></script>
     <script src="js/popup.js"></script>
+    <link rel="stylesheet" type="text/css" href="../iconfont/material-icons.css">
+    <link rel="stylesheet" type="text/css" href="../lib/material.blue-cyan.min.css">
+    <link rel="stylesheet" type="text/css" href="./styles/styles.scss">
     <title>CryptoLive</title>
 </head>
 
@@ -21,40 +21,38 @@
         <img src="../img/DesignEvo-Transparent.png" class = 'header-image'>
     </div>
     <div id="home">
-        <div id="topBar">
-            <div id="topBarLabel">Exchange</div>
-            <div id="topBarSelectAndLoad">
-                <div id="topBarSelectContainer" class="mdl-textfield mdl-js-textfield">
+        <div id="top-bar">
+            <div id="top-bar-label">Exchange</div>
+            <div id="top-bar-select-and-load">
+                <div id="top-bar-select-container" class="mdl-textfield mdl-js-textfield">
                     <select class="mdl-textfield__input" id="exchanges">
                     </select>
                 </div>
-                <div id="topBarProgressionContainer">
-                    <img id="refreshIcon"
+                <div id="top-bar-progression-container">
+                    <img id="refresh-icon"
                          src="../img/refresh.png">
-                    <div id="refreshSpinner" class="mdl-spinner mdl-js-spinner is-active"></div>
+                    <div id="refresh-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
                 </div>
             </div>
         </div>
-        <table id="tickerTable" class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
+        <table id="ticker-table" class="mdl-data-table mdl-js-data-table">
             <thead>
             <tr>
-                <th class="mdl-data-table__cell--non-numeric" style="padding: 12px">Coin Pair</th>
-                <th style="padding: 12px">Price</th>
+                <th class="mdl-data-table__cell--non-numeric td-style">Coin Pair</th>
+                <th class="td-style">Price</th>
             </tr>
             </thead>
-            <tbody id="tableBody">
+            <tbody id="table-body">
             </tbody>
         </table>
-        <div id="loadMore" style="cursor: pointer; display: none; text-align: center; color: #008ace">
+        <div id="load-more">
             load more...
         </div>
     </div>
     <div id="details" style="display: none">
-        <div id="detailsNavBar" style="position: relative;">
-            <img id="backToMain" src="../img/back.png"
-                 style="position: absolute; height: 30px;width: 30px;z-index: 20;cursor: pointer">
-            <img id="refreshDetails" src="../img/refresh.png"
-                 style="position: absolute; height: 30px;width: 30px;z-index: 20;right: 0; cursor: pointer">
+        <div id="details-nav-bar">
+            <img id="back-to-main" class="nav-bar-img" src="../img/back.png">
+            <img id="refresh-details" class="nav-bar-img" src="../img/refresh.png">
         </div>
         <div style="width: 400px;position: relative">
             <div class="overlay">

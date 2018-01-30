@@ -9,11 +9,11 @@ function scrollControll(fixmeTop) {
         let currentScroll = $(window).scrollTop();
 
         if (currentScroll >= fixmeTop) {
-            $('#topBar').css({
+            $('#top-bar').css({
                 "border-bottom-width":'2px'
             });
         } else {
-            $('#topBar').css({
+            $('#top-bar').css({
                 "border-bottom-width":'0px'
             });
         }
@@ -21,10 +21,10 @@ function scrollControll(fixmeTop) {
 }
 
 $(window).on('load', () => {
-    let fixmeTop = $('#topBar').offset().top;       // get initial position of the element
+    let fixmeTop = $('#top-bar').offset().top;       // get initial position of the element
     $(window).scroll(scrollControll(fixmeTop));
 
-    $('#refreshIcon').click(() => {
+    $('#refresh-icon').click(() => {
         position = 0;
         allMarkets = undefined;
         loadDataAndUpdate($("#exchanges option:selected").val());
@@ -57,8 +57,8 @@ $(window).on('load', () => {
         loadDetailsUI(currentTicker);
     });
 
-    $('#loadMore').click(() => {
-        $('#loadMore').hide();
+    $('#load-more').click(() => {
+        $('#load-more').hide();
         loadDataAndUpdate();
     });
 
@@ -143,8 +143,8 @@ function fetchTickerFailureHandler(market) {
 function processMarkets(markets, tableBody) {
     return markets.map((market) => {
         const tr = $('<tr/>');
-        const td = $('<td/>').addClass('mdl-data-table__cell--non-numeric').attr('style', 'padding: 12px');
-        const td2 = $('<td/>').attr('id', market.symbol.split('/').join('').split('.').join('')).attr('style', 'padding: 12px');
+        const td = $('<td/>').addClass('mdl-data-table__cell--non-numeric').addClass('td-style');
+        const td2 = $('<td/>').attr('id', market.symbol.split('/').join('').split('.').join('')).addClass('td-style');
 
         const logo = logos[market.symbol.split('/')[0]];
         if (logo)
@@ -184,14 +184,14 @@ function loadMarkets() {
 }
 
 function loadDataAndUpdate() {
-    $('#tickerTable').css('pointer-events', 'none');
+    $('#ticker-table').css('pointer-events', 'none');
     $('#exchanges').attr('disabled', true);
-    $('#refreshIcon').hide();
-    $('#refreshSpinner').show();
+    $('#refresh-icon').hide();
+    $('#refresh-spinner').show();
     componentHandler.upgradeDom();
     if (!allMarkets) {
-        const tableBody = $('#tableBody');
-        $('#loadMore').hide();
+        const tableBody = $('#table-body');
+        $('#load-more').hide();
         tableBody.empty();
         $('html').height($('#container').height());
         loadMarkets()
@@ -208,8 +208,8 @@ function loadDataAndUpdate() {
             })
             .catch(() => {
                 $('#exchanges').removeAttr('disabled');
-                $('#refreshIcon').show();
-                $('#refreshSpinner').hide();
+                $('#refresh-icon').show();
+                $('#refresh-spinner').hide();
                 $('html').height($('#container').height());
             })
     } else {
@@ -226,7 +226,7 @@ function loadDataAndUpdate() {
 }
 
 function updateTable(markets, showLoadMore) {
-    const tableBody = $('#tableBody');
+    const tableBody = $('#table-body');
     if (!markets)
         return;
     if(markets.constructor !== Array) {
@@ -241,26 +241,26 @@ function updateTable(markets, showLoadMore) {
             $('a').css('color', '');
             $('a').css('font-weight', '');
             $('#exchanges').removeAttr('disabled');
-            $('#refreshIcon').show();
-            $('#refreshSpinner').hide();
-            $('#tickerTable').css('pointer-events', 'auto');
+            $('#refresh-icon').show();
+            $('#refresh-spinner').hide();
+            $('#ticker-table').css('pointer-events', 'auto');
             componentHandler.upgradeDom();
             if (showLoadMore)
-                $('#loadMore').show();
+                $('#load-more').show();
             else
-                $('#loadMore').hide();
+                $('#load-more').hide();
         })
         .catch((err) => {
             $('a').css('color', '');
             $('a').css('font-weight', '');
             $('#exchanges').removeAttr('disabled');
-            $('#refreshIcon').show();
-            $('#refreshSpinner').hide();
-            $('#tickerTable').css('pointer-events', 'auto');
+            $('#refresh-icon').show();
+            $('#refresh-spinner').hide();
+            $('#ticker-table').css('pointer-events', 'auto');
             componentHandler.upgradeDom();
             if (showLoadMore)
-                $('#loadMore').show();
+                $('#load-more').show();
             else
-                $('#loadMore').hide();
+                $('#load-more').hide();
         })
 }
