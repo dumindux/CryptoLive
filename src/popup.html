@@ -49,65 +49,65 @@
             load more...
         </div>
     </div>
-    <div id="details" style="display: none">
+    <div id="details">
         <div id="details-nav-bar">
             <img id="back-to-main" class="nav-bar-img" src="../img/back.png">
             <img id="refresh-details" class="nav-bar-img" src="../img/refresh.png">
         </div>
-        <div style="width: 400px;position: relative">
+        <div id="details-container">
             <div class="overlay">
-                <div id="loadingSpinner" class="loader mdl-spinner mdl-js-spinner is-active"></div>
-                <div id="notSupported" style="display: none;margin-top: 200px;text-align: center;">
+                <div id="loading-spinner" class="loader mdl-spinner mdl-js-spinner is-active"></div>
+                <div id="not-supported" class="details-error-msg">
                     <div>This exchange does not support OHLC data.</div>
                 </div>
-                <div id="detailsError" style="display: none;margin-top: 200px;text-align: center;">
+                <div id="details-error" class="details-error-msg">
                     <div>An error occurred while fetching OHLC data.</div>
                 </div>
             </div>
-            <div id="content" style="display: none; padding-top: 30px">
-                <div id="chart" style="height: 400px; width: 400px;"></div>
+            <div id="content">
+                <div id="chart"></div>
                 <div>
-                    <div style="padding: 12px;font-size: 13px">
-                        <span style="float: left;font-weight: bold;color: #008ace;">Last</span>
-                        <span id="lastPriceDetailsPage" style="float: right">0</span>
+                    <div id="last-price-container">
+                        <span id="last-price-label">Last</span>
+                        <span id="last-price-details-page">0</span>
                     </div>
-                    <table class="mdl-data-table mdl-js-data-table" style="border: 0; width: 400px">
+                    <table id="details-table" class="mdl-data-table mdl-js-data-table">
                         <thead>
                         <tr>
-                            <th id="detailsTableHeading" class="mdl-data-table__cell--non-numeric"
-                                style="padding: 12px">Past 1 minute market data
+                            <th id="details-table-heading" class="mdl-data-table__cell--non-numeric td-style">
+                                Past 1 minute market data
                             </th>
                         </tr>
                         <tbody>
                         <tr>
-                            <td class="'mdl-data-table__cell--non-numeric'" style=";padding: 12px">
-                                <span style="float: left;font-weight: bold;color: #008ace;">Open</span>
+                            <td class="mdl-data-table__cell--non-numeric td-style">
+                                <span class="ohlc-label">Open</span>
                             </td>
-                            <td style="padding: 12px">
+                            <td class="td-style">
                                 <span id="openValue">0</span>
                             </td>
                         </tr>
                         <tr>
-                            <td class="'mdl-data-table__cell--non-numeric'" style="padding: 12px">
-                                <span style="float: left;font-weight: bold;color: #008ace;">High</span>
+                            <td class="mdl-data-table__cell--non-numeric td-style">
+                                <span class="ohlc-label">High</span>
                             </td>
-                            <td style="padding: 12px">
+                            <td class="td-style">
                                 <span id="highValue">0</span>
                             </td>
                         </tr>
                         <tr>
-                            <td class="'mdl-data-table__cell--non-numeric'" style="padding: 12px">
-                                <span style="float: left;font-weight: bold;color: #008ace;">Low</span>
+                            <td class="mdl-data-table__cell--non-numeric td-style">
+                                <span class="ohlc-label">Low</span>
                             </td>
-                            <td style="padding: 12px">
+                            <td class="td-style">
                                 <span id="lowValue">0</span>
                             </td>
                         </tr>
                         <tr>
-                            <td class="'mdl-data-table__cell--non-numeric'" style="border-bottom: none;padding: 12px">
-                                <span style="float: left;font-weight: bold;color: #008ace;">Close</span>
+                            <td class="mdl-data-table__cell--non-numeric td-style border-bottom-none">
+                                <span class="ohlc-label">Close</span>
                             </td>
-                            <td style="border-bottom: none;padding: 12px">
+                            <td class="td-style border-bottom-none">
                                 <span id="closeValue">0</span>
                             </td>
                         </tr>

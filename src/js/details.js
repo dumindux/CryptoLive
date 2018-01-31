@@ -188,9 +188,9 @@ function loadDetailsUI(ticker) {
     currentTicker = ticker;
     if (!exchange.hasFetchOHLCV || !exchange.timeframes) {
         console.log(exchange.hasFetchOHLCV, exchange.timeframes);
-        $('#notSupported').show();
-        $('#loadingSpinner').hide();
-        $('#backToMain').css('z-index', '1500');
+        $('#not-supported').show();
+        $('#loading-spinner').hide();
+        $('#back-to-main').css('z-index', '1500');
         return;
     }
 
@@ -199,7 +199,7 @@ function loadDetailsUI(ticker) {
     const timeframeInformation = timeframe === '1m'? info1m : (timeframe === '5m' ? info5m : (timeframe === '15m' ? info15m : (timeframe === '90m' ? info90m : info1d)));
 
     exchange.timeout = 20000;
-    $('#detailsTableHeading').text(`Past ${timeframeInformation.displayText} market data`);
+    $('#details-table-heading').text(`Past ${timeframeInformation.displayText} market data`);
     console.log(ticker, timeframe);
     const limit = OHLCCount[exchange.id];
     exchange.fetchOHLCV (ticker, timeframe, OHLCStart[exchange.id] ? (Date.now() - 86400 * 1000) : undefined, limit ? limit : (limit === null ? undefined : 1000))
@@ -217,20 +217,20 @@ function loadDetailsUI(ticker) {
         })
         .catch((e) => {
             console.log(e);
-            $('#detailsError').show();
-            $('#loadingSpinner').hide();
-            $('#refreshDetails').css('z-index', '1500');
-            $('#backToMain').css('z-index', '1500');
+            $('#details-error').show();
+            $('#loading-spinner').hide();
+            $('#refresh-details').css('z-index', '1500');
+            $('#back-to-main').css('z-index', '1500');
             detailsError = true;
             exchange.timeout = 10000;
         });
 
     exchange.fetchTicker(ticker)
         .then(data => {
-            $('#lastPriceDetailsPage').text(data.last);
+            $('#last-price-details-page').text(data.last);
         })
         .catch(() => {
-            $('#lastPriceDetailsPage').text('0');
+            $('#last-price-details-page').text('0');
         });
 }
 

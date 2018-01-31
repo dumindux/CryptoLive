@@ -118,7 +118,7 @@ a {
     width: 400px
 }
 
-#ticker-table .td-style {
+#ticker-table .td-style, #details-table .td-style {
     padding: 12px
 }
 
@@ -145,3 +145,53 @@ a {
     cursor: pointer
 }
 
+#details-container {
+    width: 400px;
+    position: relative;
+}
+
+.details-error-msg {
+    display: none;
+    margin-top: 200px;
+    text-align: center;
+}
+
+#last-price-label {
+    float: left;
+    font-weight: bold;
+    color: #008ace;
+}
+
+#last-price-details-page {
+    float: right;
+}
+
+#content {
+    display: none;
+    padding-top: 30px;
+}
+
+#chart {
+    height: 400px;
+    width: 400px;
+}
+
+#last-price-container {
+    padding: 12px;
+    font-size: 13px;
+}
+
+#details-table {
+    border: 0;
+    width: 400px
+}
+
+.border-bottom-none {
+    border-bottom: none;
+}
+
+.ohlc-label {
+    float: left;
+    font-weight: bold;
+    color: #008ace;
+}

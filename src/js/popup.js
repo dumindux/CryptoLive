@@ -10,17 +10,18 @@ function scrollControll(fixmeTop) {
 
         if (currentScroll >= fixmeTop) {
             $('#top-bar').css({
-                "border-bottom-width":'2px'
+                'border-bottom-width': '2px'
             });
         } else {
             $('#top-bar').css({
-                "border-bottom-width":'0px'
+                'border-bottom-width': 0
             });
         }
     }
 }
 
 $(window).on('load', () => {
+    $('#details').hide();
     let fixmeTop = $('#top-bar').offset().top;       // get initial position of the element
     $(window).scroll(scrollControll(fixmeTop));
 
@@ -30,29 +31,29 @@ $(window).on('load', () => {
         loadDataAndUpdate($("#exchanges option:selected").val());
     });
 
-    $('#backToMain').click(() => {
+    $('#back-to-main').click(() => {
         position = 0;
         allMarkets = undefined;
         $('#home').show();
         $('#details').hide();
         $('.overlay').show();
         $('#content').hide();
-        $('#detailsError').hide();
-        $('#notSupported').hide();
-        $('#loadingSpinner').show();
-        $('#refreshDetails').css('z-index', '20');
-        $('#backToMain').css('z-index', '20');
-        $('#lastPriceDetailsPage').text('0');
+        $('#details-error').hide();
+        $('#not-supported').hide();
+        $('#loading-spinner').show();
+        $('#refresh-details').css('z-index', '20');
+        $('#back-to-main').css('z-index', '20');
+        $('#last-price-details-page').text('0');
 
         loadDataAndUpdate();
     });
 
-    $('#refreshDetails').click(() => {
+    $('#refresh-details').click(() => {
         if (detailsError) {
-            $('#refreshDetails').css('z-index', '20');
-            $('#backToMain').css('z-index', '20');
-            $('#detailsError').hide();
-            $('#loadingSpinner').show();
+            $('#refresh-details').css('z-index', '20');
+            $('#back-to-main').css('z-index', '20');
+            $('#details-error').hide();
+            $('#loading-spinner').show();
         }
         loadDetailsUI(currentTicker);
     });
@@ -173,7 +174,6 @@ function processMarkets(markets, tableBody) {
                 const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
                 valueTd.empty();
                 valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last? ticker.last : ticker.close));
-                //valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: green').text('done'));
             })
             .catch(fetchTickerFailureHandler(market));
     });
@@ -234,12 +234,10 @@ function updateTable(markets, showLoadMore) {
     }
 
     const promises = processMarkets(markets, tableBody);
-    $('a').css('color', '#000000');
-    $('a').css('font-weight', 'normal');
+    $('a').css({ color: '#000000', 'font-weight': 'normal' });
     Promise.all(promises)
         .then(() => {
-            $('a').css('color', '');
-            $('a').css('font-weight', '');
+            $('a').css({ color: '', 'font-weight': '' });
             $('#exchanges').removeAttr('disabled');
             $('#refresh-icon').show();
             $('#refresh-spinner').hide();
@@ -250,9 +248,8 @@ function updateTable(markets, showLoadMore) {
             else
                 $('#load-more').hide();
         })
-        .catch((err) => {
-            $('a').css('color', '');
-            $('a').css('font-weight', '');
+        .catch(() => {
+            $('a').css({ color: '', 'font-weight': '' });
             $('#exchanges').removeAttr('disabled');
             $('#refresh-icon').show();
             $('#refresh-spinner').hide();
