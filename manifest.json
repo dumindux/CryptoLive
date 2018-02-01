@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Crypto Live",
-  "description": "This extension allows the user to view current trading prices for crypto currencies at different exchanges",
+  "name": "CryptoLive - Cryptocurrency price tracker",
+  "description": "This extension allows the user to view current trading prices for crypto currencies at different exchanges and track price changes over time using candlestick charts",
   "version": "1.0.0",
   "browser_action": {
     "default_icon": "img/icon.png",

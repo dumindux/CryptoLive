@@ -65,7 +65,15 @@ $(window).on('load', () => {
 
     const dropdown = $('#exchanges');
 
-    chrome.storage.sync.get(['exchange'], function(item){
+    if (chrome.storage) {
+        chrome.storage.sync.get(['exchange'], onExchangeRead(dropdown));
+    } else {
+        onExchangeRead (dropdown)({exchange: 'gdax'})
+    }
+});
+
+function onExchangeRead (dropdown){
+    return (item) => {
         let savedExchange = item.exchange ? item.exchange : 'gdax';
         console.log(savedExchange);
 
@@ -88,8 +96,8 @@ $(window).on('load', () => {
             exchange = new ccxt[this.value]();
             loadDataAndUpdate();
         });
-    });
-});
+    }
+}
 
 function sortMarkets(markets) {
     return markets.filter(market => market.active === undefined ? true : market.active).sort((a, b) => {
