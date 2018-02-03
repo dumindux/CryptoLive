@@ -32,8 +32,6 @@ $(window).on('load', () => {
     });
 
     $('#back-to-main').click(() => {
-        position = 0;
-        allMarkets = undefined;
         $('#home').show();
         $('#details').hide();
         $('.overlay').show();
@@ -44,8 +42,6 @@ $(window).on('load', () => {
         $('#refresh-details').css('z-index', '20');
         $('#back-to-main').css('z-index', '20');
         $('#last-price-details-page').text('0');
-
-        loadDataAndUpdate();
     });
 
     $('#refresh-details').click(() => {
