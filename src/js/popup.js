@@ -126,12 +126,12 @@ function fetchTickerFailureHandler(market) {
     return () => {
         const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
         valueTd.empty();
-        valueTd.append($('<span>').attr('style','font-weight: 100').text('0'));
+        valueTd.append($('<span>').addClass('td-font-weight').text('0'));
         const refreshClickHandler = () => {
             const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
             valueTd.empty();
-            valueTd.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
-            valueTd.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
+            valueTd.append($('<span>').addClass('td-font-weight').text('0'), '&nbsp;&nbsp;');
+            valueTd.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').addClass('small-spinner'));
             componentHandler.upgradeDom();
 
             exchange.fetchTicker((exchange.id === '_1btcxe' || exchange.id === 'getbtc') ? market.symbol.split('/')[1] : market.symbol)
@@ -142,17 +142,17 @@ function fetchTickerFailureHandler(market) {
                         valueTd.closest('tr').hide();
                         $('html').height($('#container').height());
                     } else {
-                        valueTd.append($('<span>').attr('style', 'font-weight: 100').text(value));
+                        valueTd.append($('<span>').addClass('td-font-weight').text(value));
                     }
                 })
                 .catch((err) => {
                     console.log(err);
                     valueTd.empty();
-                    valueTd.append($('<span>').attr('style','font-weight: 100').text('0'));
-                    valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: red;vertical-align: -3px; cursor: pointer;').text('refresh').click(refreshClickHandler));
+                    valueTd.append($('<span>').addClass('td-font-weight').text('0'));
+                    valueTd.append($('<i>').addClass('material-icons').addClass('small-refresh').text('refresh').click(refreshClickHandler));
                 });
         };
-        const refresh = $('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: red;vertical-align: -3px;cursor: pointer;').text('refresh').click(refreshClickHandler);
+        const refresh = $('<i>').addClass('material-icons').addClass('small-refresh').text('refresh').click(refreshClickHandler);
         valueTd.append(refresh);
     };
 }
@@ -165,9 +165,9 @@ function processMarkets(markets, tableBody) {
 
         const logo = logos[market.symbol.split('/')[0]];
         if (logo)
-            td.append($('<img/>').attr('src', 'logos/' + logo).attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
+            td.append($('<img/>').attr('src', 'logos/' + logo).addClass('logo-style'));
         else
-            td.append($('<img/>').attr('src', '../img/icon.png').attr('style', 'height: 15px; width: 15px; margin-right:5px;  margin-bottom:5px'));
+            td.append($('<img/>').attr('src', '../img/icon.png').addClass('logo-style'));
         td.append($('<span>').append($('<a>').attr('id', 'name-' + market.symbol.split('/').join('').split('.').join('')).text(market.symbol).click(() => {
             $('#home').hide();
             $('#details').show();
@@ -176,8 +176,8 @@ function processMarkets(markets, tableBody) {
             loadDetailsUI(market.symbol);
         })));
 
-        td2.append($('<span>').attr('style','font-weight: 100').text('0'), '&nbsp;&nbsp;');
-        td2.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
+        td2.append($('<span>').addClass('td-font-weight').text('0'), '&nbsp;&nbsp;');
+        td2.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').addClass('small-spinner'));
 
         tr.append(td);
         tr.append(td2);
@@ -194,7 +194,7 @@ function processMarkets(markets, tableBody) {
                     valueTd.closest('tr').hide();
                     $('html').height($('#container').height());
                 } else {
-                    valueTd.append($('<span>').attr('style', 'font-weight: 100').text(value));
+                    valueTd.append($('<span>').addClass('td-font-weight').text(value));
                 }
             })
             .catch(fetchTickerFailureHandler(market));
