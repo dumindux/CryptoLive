@@ -71,7 +71,6 @@ $(window).on('load', () => {
 function onExchangeRead (dropdown){
     return (item) => {
         let savedExchange = item.exchange ? item.exchange : 'gdax';
-        console.log(savedExchange);
 
         for (let i = 0; i < ccxt.exchanges.length; i++){
             if (!unsupportedExchanges[ccxt.exchanges[i]]) {
@@ -98,9 +97,7 @@ function onExchangeRead (dropdown){
 }
 
 function sortMarkets(markets) {
-    console.log(markets)
     markets = markets.constructor === Array ? markets : Object.keys(markets).map(symbol => { return {symbol}});
-    console.log(markets)
     return markets.filter(market => market.active === undefined ? true : market.active).sort((a, b) => {
         const aBeginining = priority[a.symbol.split('/')[0]];
         const bBeginining = priority[b.symbol.split('/')[0]];
@@ -145,8 +142,7 @@ function fetchTickerFailureHandler(market) {
                         valueTd.append($('<span>').addClass('td-font-weight').text(value));
                     }
                 })
-                .catch((err) => {
-                    console.log(err);
+                .catch(() => {
                     valueTd.empty();
                     valueTd.append($('<span>').addClass('td-font-weight').text('0'));
                     valueTd.append($('<i>').addClass('material-icons').addClass('small-refresh').text('refresh').click(refreshClickHandler));
@@ -228,8 +224,7 @@ function loadDataAndUpdate() {
                     position = position + 20;
                 }
             })
-            .catch((err) => {
-                console.log(err);
+            .catch(() => {
                 $('#exchanges').removeAttr('disabled');
                 $('#refresh-icon').show();
                 $('#refresh-spinner').hide();

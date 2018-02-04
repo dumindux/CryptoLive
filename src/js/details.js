@@ -187,7 +187,6 @@ let currentTicker;
 function loadDetailsUI(ticker) {
     currentTicker = ticker;
     if (!exchange.hasFetchOHLCV || !exchange.timeframes) {
-        console.log(exchange.hasFetchOHLCV, exchange.timeframes);
         $('#not-supported').show();
         $('#loading-spinner').hide();
         $('#back-to-main').css('z-index', '1500');
@@ -200,11 +199,9 @@ function loadDetailsUI(ticker) {
 
     exchange.timeout = 20000;
     $('#details-table-heading').text(`Past ${timeframeInformation.displayText} market data`);
-    console.log(ticker, timeframe);
     const limit = OHLCCount[exchange.id];
     exchange.fetchOHLCV (ticker, timeframe, OHLCStart[exchange.id] ? (Date.now() - 86400 * 1000) : undefined, limit ? limit : (limit === null ? undefined : 1000))
         .then((data) => {
-            console.log(data);
             data = data.map(item => [item[0], parseFloat(item[1]), parseFloat(item[2]), parseFloat(item[3]), parseFloat(item[4])]).sort((a, b) => a[0] - b[0]);
             loadChart(ticker, data, timeframeInformation.buttons);
             $('#openValue').text(data[data.length - 1][1]);
@@ -215,8 +212,7 @@ function loadDetailsUI(ticker) {
             $('.overlay').hide();
             exchange.timeout = 10000;
         })
-        .catch((e) => {
-            console.log(e);
+        .catch(() => {
             $('#details-error').show();
             $('#loading-spinner').hide();
             $('#refresh-details').css('z-index', '1500');
