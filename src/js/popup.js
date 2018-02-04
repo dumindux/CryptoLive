@@ -74,10 +74,12 @@ function onExchangeRead (dropdown){
         console.log(savedExchange);
 
         for (let i = 0; i < ccxt.exchanges.length; i++){
-            const opt = $('<option>').attr('value', ccxt.exchanges[i]).text(ccxt.exchanges[i]);
-            if (ccxt.exchanges[i] === savedExchange)
-                opt.attr('selected', true);
-            dropdown.append(opt);
+            if (!unsupportedExchanges[ccxt.exchanges[i]]) {
+                const opt = $('<option>').attr('value', ccxt.exchanges[i]).text(ccxt.exchanges[i]);
+                if (ccxt.exchanges[i] === savedExchange)
+                    opt.attr('selected', true);
+                dropdown.append(opt);
+            }
         }
 
         position = 0;
@@ -96,6 +98,9 @@ function onExchangeRead (dropdown){
 }
 
 function sortMarkets(markets) {
+    console.log(markets)
+    markets = markets.constructor === Array ? markets : Object.keys(markets).map(symbol => { return {symbol}});
+    console.log(markets)
     return markets.filter(market => market.active === undefined ? true : market.active).sort((a, b) => {
         const aBeginining = priority[a.symbol.split('/')[0]];
         const bBeginining = priority[b.symbol.split('/')[0]];
@@ -129,12 +134,19 @@ function fetchTickerFailureHandler(market) {
             valueTd.append($('<div>').addClass('mdl-spinner mdl-js-spinner is-active').attr('style', 'height: 12px; width: 12px'));
             componentHandler.upgradeDom();
 
-            exchange.fetchTicker(market.symbol)
+            exchange.fetchTicker((exchange.id === '_1btcxe' || exchange.id === 'getbtc') ? market.symbol.split('/')[1] : market.symbol)
                 .then((ticker) => {
                     valueTd.empty();
-                    valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last? ticker.last : ticker.close));
+                    const value = ticker.last? ticker.last : ticker.close;
+                    if(!value) {
+                        valueTd.closest('tr').hide();
+                        $('html').height($('#container').height());
+                    } else {
+                        valueTd.append($('<span>').attr('style', 'font-weight: 100').text(value));
+                    }
                 })
-                .catch(() => {
+                .catch((err) => {
+                    console.log(err);
                     valueTd.empty();
                     valueTd.append($('<span>').attr('style','font-weight: 100').text('0'));
                     valueTd.append($('<i>').addClass('material-icons').attr('style', 'font-size: 15px;margin-left: 3px;color: red;vertical-align: -3px; cursor: pointer;').text('refresh').click(refreshClickHandler));
@@ -173,11 +185,17 @@ function processMarkets(markets, tableBody) {
         componentHandler.upgradeDom();
         $('html').height($('#container').height());
 
-        return exchange.fetchTicker(market.symbol)
+        return exchange.fetchTicker((exchange.id === '_1btcxe' || exchange.id === 'getbtc') ? market.symbol.split('/')[1] : market.symbol)
             .then((ticker) => {
                 const valueTd = $('#' + market.symbol.split('/').join('').split('.').join(''));
                 valueTd.empty();
-                valueTd.append($('<span>').attr('style','font-weight: 100').text(ticker.last? ticker.last : ticker.close));
+                const value = ticker.last? ticker.last : ticker.close;
+                if(!value) {
+                    valueTd.closest('tr').hide();
+                    $('html').height($('#container').height());
+                } else {
+                    valueTd.append($('<span>').attr('style', 'font-weight: 100').text(value));
+                }
             })
             .catch(fetchTickerFailureHandler(market));
     });
@@ -210,7 +228,8 @@ function loadDataAndUpdate() {
                     position = position + 20;
                 }
             })
-            .catch(() => {
+            .catch((err) => {
+                console.log(err);
                 $('#exchanges').removeAttr('disabled');
                 $('#refresh-icon').show();
                 $('#refresh-spinner').hide();
