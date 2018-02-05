@@ -163,7 +163,7 @@ function processMarkets(markets, tableBody) {
         if (logo)
             td.append($('<img/>').attr('src', 'logos/' + logo).addClass('logo-style'));
         else
-            td.append($('<img/>').attr('src', '../img/icon.png').addClass('logo-style'));
+            td.append($('<img/>').attr('src', '../img/icons/icon.png').addClass('logo-style'));
         td.append($('<span>').append($('<a>').attr('id', 'name-' + market.symbol.split('/').join('').split('.').join('')).text(market.symbol).click(() => {
             $('#home').hide();
             $('#details').show();
