@@ -139,7 +139,7 @@ function fetchTickerFailureHandler(market) {
                         valueTd.closest('tr').hide();
                         $('html').height($('#container').height());
                     } else {
-                        valueTd.append($('<span>').addClass('td-font-weight').text(value));
+                        valueTd.append($('<span>').addClass('td-font-weight').text(value.toLocaleString()));
                     }
                 })
                 .catch(() => {
@@ -190,7 +190,7 @@ function processMarkets(markets, tableBody) {
                     valueTd.closest('tr').hide();
                     $('html').height($('#container').height());
                 } else {
-                    valueTd.append($('<span>').addClass('td-font-weight').text(value));
+                    valueTd.append($('<span>').addClass('td-font-weight').text(value.toLocaleString()));
                 }
             })
             .catch(fetchTickerFailureHandler(market));

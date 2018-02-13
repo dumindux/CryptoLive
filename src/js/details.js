@@ -204,10 +204,10 @@ function loadDetailsUI(ticker) {
         .then((data) => {
             data = data.map(item => [item[0], parseFloat(item[1]), parseFloat(item[2]), parseFloat(item[3]), parseFloat(item[4])]).sort((a, b) => a[0] - b[0]);
             loadChart(ticker, data, timeframeInformation.buttons);
-            $('#openValue').text(data[data.length - 1][1]);
-            $('#highValue').text(data[data.length - 1][2]);
-            $('#lowValue').text(data[data.length - 1][3]);
-            $('#closeValue').text(data[data.length - 1][4]);
+            $('#openValue').text(data[data.length - 1][1].toLocaleString());
+            $('#highValue').text(data[data.length - 1][2].toLocaleString());
+            $('#lowValue').text(data[data.length - 1][3].toLocaleString());
+            $('#closeValue').text(data[data.length - 1][4].toLocaleString());
             $('#content').show();
             $('.overlay').hide();
             exchange.timeout = 10000;
@@ -223,7 +223,7 @@ function loadDetailsUI(ticker) {
 
     exchange.fetchTicker(ticker)
         .then(data => {
-            $('#last-price-details-page').text(data.last);
+            $('#last-price-details-page').text(data.last.toLocaleString());
         })
         .catch(() => {
             $('#last-price-details-page').text('0');
